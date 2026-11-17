@@ -503,7 +503,6 @@ def apply_document(state, doc: dict, label: str) -> None:
     state['v_local_spread'] = None if local_override is None else local_override*100
     state['note_local_spread'] = label
     state['date_local_spread'] = ''
-    state['loaded_note'] = label
     state.pop('bundle', None)
 
 
@@ -584,9 +583,6 @@ def run_ui():
     state.setdefault('debt_share', 30.0)
     state.setdefault('tax_basis', 'US federal')
 
-    def load_example():
-        apply_document(state, example_scenario(), 'User-supplied illustrative example; not current market data')
-
     def import_file():
         try:
             doc = parse_scenario(state['scenario_upload'].getvalue())
@@ -599,8 +595,7 @@ def run_ui():
     with st.sidebar:
         st.markdown('### 🌐 Capital Atlas')
         st.caption('INTERNATIONAL COST OF CAPITAL')
-        st.toggle('Manual-only mode', key='offline', help='Skip all network calls. Enter your own dated assumptions or load the example.')
-        st.button('Load agreed Colombia example', on_click=load_example, width='stretch')
+        st.toggle('Manual-only mode', key='offline', help='Skip all network calls. Enter your own dated assumptions.')
         st.button('Reset assumptions', on_click=lambda: reset_document(state), width='stretch')
         st.file_uploader('Import scenario JSON', type='json', key='scenario_upload', on_change=import_file)
         if state.get('import_error'):
@@ -682,8 +677,6 @@ def run_ui():
     <h1>One project. Two currency lenses.</h1>
     <p>Build a transparent cost of capital from industry risk, financing choices and government-yield proxies. Every input has a source—or an explicit assumption.</p></div>''',unsafe_allow_html=True)
     st.caption(f"{meta['flag']} {country['name']} · USD ↔ {state.get('currency') or 'local currency'} · Common tax, leverage and business-risk assumptions")
-    if state.get('loaded_note'):
-        st.info(state['loaded_note'])
     if not sources.get('Country coverage',{}).get('data'):
         st.caption('Country list is a metadata-only manual catalog; live Trading Economics coverage is unavailable or manual-only mode is enabled.')
     errors = [k for k,v in sources.items() if v.get('error')]
@@ -759,7 +752,7 @@ def run_ui():
         render_results(st,pd,go,bundle['document'])
     elif not bundle:
         st.markdown('### Make the assumptions yours')
-        st.write('Choose an industry, review the source values, and calculate. To explore without live data, load the agreed Colombia example from the sidebar.')
+        st.write('Choose an industry, review the source values, and calculate. To work without live data, enable manual-only mode and enter your assumptions.')
 
     render_sources(st,pd,sources)
     with st.expander('Financial methodology & approximations'):
