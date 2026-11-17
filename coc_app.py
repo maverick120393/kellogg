@@ -563,6 +563,7 @@ def style(st):
     .stButton>button[kind="primary"] {background:#087f83;border-color:#087f83;}
     [data-testid="stTabs"] {margin-top:1rem;}
     @media(max-width:640px){.hero{padding:1.2rem}.hero h1{font-size:1.7rem}.rate-card .number{font-size:2.5rem}}
+    @media(max-width:640px){.rate-card .number{font-size:2.5rem}}
     </style>''', unsafe_allow_html=True)
 
 
@@ -676,6 +677,8 @@ def run_ui():
     st.markdown('''<div class="hero"><div class="eyebrow" style="color:#83d6cc">CAPITAL ATLAS / VALUATION WORKBENCH</div>
     <h1>One project. Two currency lenses.</h1>
     <p>Build a transparent cost of capital from industry risk, financing choices and government-yield proxies. Every input has a source—or an explicit assumption.</p></div>''',unsafe_allow_html=True)
+    st.title('International Cost of Capital')
+    st.caption('Compare the cost of equity, debt and capital in USD and local currency.')
     st.caption(f"{meta['flag']} {country['name']} · USD ↔ {state.get('currency') or 'local currency'} · Common tax, leverage and business-risk assumptions")
     if not sources.get('Country coverage',{}).get('data'):
         st.caption('Country list is a metadata-only manual catalog; live Trading Economics coverage is unavailable or manual-only mode is enabled.')
